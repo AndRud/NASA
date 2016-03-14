@@ -12,6 +12,7 @@ public class Imagery extends RealmObject{
 
     public static final String MEDIA_TYPE_IMAGE = "image";
     public static final String MEDIA_TYPE_VIDEO = "video";
+    public static final String MEDIA_TYPE_TEST = "video";
 
     @PrimaryKey
     @SerializedName("date")
