@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">NASA</string>
+    <string name="action_settings">Налаштування</string>
+    <string name="ac_name_image_list">Image List Example</string>
+    <string name="ac_name_image_grid">Image Grid Example</string>
+    <string name="ac_name_image_pager">Image Pager Example</string>
+    <string name="ac_name_image_gallery">Image Gallery Example</string>
+    <string name="ac_name_complex">Complex Example</string>
+
+    <string name="title_list">List</string>
+    <string name="title_grid">Grid</string>
+
+    <string name="input_output_error">Помилка завантаження</string>
+    <string name="image_cant_be_decoded">Неможливо розшифрувати зображення</string>
+    <string name="downloads_are_denied">Бракує пам\'яті для створення зображення</string>
+    <string name="out_of_memory_error">Помилка: недостатньо пам\'яті</string>
+    <string name="unknown_error">Невідома помилка</string>
+
+    <string name="menu_set_wallpaper">Встановити в якості шпалер</string>
+    <string name="menu_item_clear_memory_cache">Очистити кеш пам\'яті</string>
+    <string name="menu_item_clear_disc_cache">Очистити кеш диска</string>
+
+    <!-- Content descriptions -->
+    <string name="descr_image">Малюнок</string>
+
+    <string name="question_internet_conn">Немає підключення до Інтернету. Відкрити налаштування?</string>
+    <string name="settings">Налаштування</string>
+    <string name="dismiss">Скасувати</string>
+
+    <string name="no_data_to_display">Немає даних для відображення. Перевірте інтернет підключення і перезапустіть додаток.</string>
+    <string name="change_wallpaper_success">Шпалери успішно змінено</string>
+    <string name="change_wallpaper_error">Помилка! Шпалери не змінено.</string>
+</resources>

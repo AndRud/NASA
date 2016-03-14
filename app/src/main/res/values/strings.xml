@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">NASA</string>
+    <string name="action_settings">Settings</string>
+    <string name="ac_name_image_list">Image List Example</string>
+    <string name="ac_name_image_grid">Image Grid Example</string>
+    <string name="ac_name_image_pager">Image Pager Example</string>
+    <string name="ac_name_image_gallery">Image Gallery Example</string>
+    <string name="ac_name_complex">Complex Example</string>
+
+    <string name="title_list">List</string>
+    <string name="title_grid">Grid</string>
+
+    <string name="input_output_error">Input/Output error</string>
+    <string name="image_cant_be_decoded">Image can\'t be decoded</string>
+    <string name="downloads_are_denied">Downloads are denied</string>
+    <string name="out_of_memory_error">Out Of Memory error</string>
+    <string name="unknown_error">Unknown error</string>
+
+    <string name="menu_set_wallpaper">Set as wallpaper</string>
+    <string name="menu_item_clear_memory_cache">Clear memory cache</string>
+    <string name="menu_item_clear_disc_cache">Clear disc cache</string>
+
+    <!-- Content descriptions -->
+    <string name="descr_image">Image</string>
+
+    <string name="question_internet_conn">No internet connection. Open settings?</string>
+    <string name="settings">Settings</string>
+    <string name="dismiss">Dismiss</string>
+
+    <string name="no_data_to_display">No data to display. Check your internet connection and restart the application.</string>
+    <string name="change_wallpaper_success">Wallpaper successfully changed</string>
+    <string name="change_wallpaper_error">Failed! Wallpaper is not changed</string>
+</resources>

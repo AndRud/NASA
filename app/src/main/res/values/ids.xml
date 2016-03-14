@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="imagery_loader" type="id"/>
+    <item name="odd_imagery_loader" type="id"/>
+    <item name="pair_imagery_loader" type="id"/>
+    <item name="list_imagery" type="id"/>
+    <item name="image" type="id"/>
+</resources>
