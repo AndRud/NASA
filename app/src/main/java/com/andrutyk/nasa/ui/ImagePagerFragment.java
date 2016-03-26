@@ -264,8 +264,8 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
 
         @Override
         public void onRefresh() {
+            swipeRefreshLayout.setRefreshing(false);
             Toast.makeText(getContext(), "Swipe " + (imageAdapter.getCount() - pager.getCurrentItem() -1), Toast.LENGTH_LONG).show();
-
         }
     }
 
