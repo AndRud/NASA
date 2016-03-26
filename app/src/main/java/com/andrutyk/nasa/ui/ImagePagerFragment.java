@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.andrutyk.nasa.API.Response.Response;
 import com.andrutyk.nasa.Content.Imagery;
-import com.andrutyk.nasa.Database.Realm.ImageryHelper;
 import com.andrutyk.nasa.Loaders.Async.Cursor.ImageryLoader;
 import com.andrutyk.nasa.R;
 import com.andrutyk.nasa.adapter.ImageAdapter;
@@ -46,6 +45,7 @@ import io.realm.RealmChangeListener;
  */
 public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<Response>{
     private final static  String DATE_IMAGERY = "DATE_IMAGERY";
+    private final static  String DATE_FORMAT = "yyyy-MM-dd";
 
     private ImageAdapter imageAdapter = null;
     private ViewPager pager = null;
@@ -85,7 +85,7 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
         DateTime desDate = curDate.minusDays(diffDays);
 
         Bundle extras = new Bundle();
-        String dateStr = DateTimeFormat.forPattern("yyyy-MM-dd").print(desDate);
+        String dateStr = DateTimeFormat.forPattern(DATE_FORMAT).print(desDate);
         extras.putString(DATE_IMAGERY, dateStr);
         getLoaderManager().restartLoader(R.id.imagery_loader, extras, this);
     }
@@ -110,7 +110,6 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
 
         View imageLayout = inflater.inflate(R.layout.item_pager_image, null, false);
         assert imageLayout != null;
-        imageLayout.setTag(imagery.getDate());
         final ImageView imageView = (ImageView) imageLayout.findViewById(R.id.image);
         registerForContextMenu(imageView);
 
@@ -172,6 +171,12 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
         return imageLayout;
     }
 
+    private boolean refreshImageryView(final Context context, Imagery imagery){
+        View view = getCurrentPage();
+
+        return true;
+    }
+
     public View getCurrentPage ()
     {
         return imageAdapter.getView (pager.getCurrentItem());
@@ -200,7 +205,7 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
         DateTime dateTime = new DateTime(DateTime.now());
         dateTime = dateTime.minusDays(1);
         Bundle extras = new Bundle();
-        String dateStr = DateTimeFormat.forPattern("yyyy-MM-dd").print(dateTime);
+        String dateStr = DateTimeFormat.forPattern(DATE_FORMAT).print(dateTime);
         extras.putString(DATE_IMAGERY, dateStr);
         getLoaderManager().restartLoader(R.id.imagery_loader, extras, this);
     }
@@ -228,6 +233,7 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
                 /*String media_type = imagery.getMedia_type().toString();
                 if (TextUtils.equals(media_type, Imagery.MEDIA_TYPE_IMAGE) ||
                         TextUtils.equals(media_type, Imagery.MEDIA_TYPE_VIDEO))*/
+
                     addView(createView(getContext(), imagery));
             } catch (NullPointerException e){
                 addView(createNoDataView(getContext()));

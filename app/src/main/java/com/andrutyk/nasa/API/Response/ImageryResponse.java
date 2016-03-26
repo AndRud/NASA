@@ -1,13 +1,9 @@
 package com.andrutyk.nasa.API.Response;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.andrutyk.nasa.Content.Imagery;
 import com.andrutyk.nasa.Database.Realm.ImageryHelper;
-import com.andrutyk.nasa.Database.Tables.ImagesTable;
-
-import java.util.List;
 
 import io.realm.Realm;
 

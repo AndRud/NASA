@@ -25,11 +25,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <provider
-            android:authorities="andrutyk.retrofit.loaders"
-            android:exported="false"
-            android:name=".Database.ImageryContentProvider"
-            android:label="SporticsProvider"/>
 
     </application>
 
