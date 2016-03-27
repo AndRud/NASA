@@ -27,7 +27,7 @@ public class ImageAdapter extends PagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        int index = views.indexOf (object);
+        int index = views.indexOf(object);
         if (index == -1)
             return POSITION_NONE;
         else
@@ -71,5 +71,14 @@ public class ImageAdapter extends PagerAdapter {
 
     public View getView(int position){
         return views.get(position);
+    }
+
+    public View getViewByTag(String tag){
+        for (View view : views){
+            if (view.getTag().toString().equals(tag)){
+                return view;
+            }
+        }
+        return null;
     }
 }

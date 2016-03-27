@@ -1,17 +1,13 @@
 package com.andrutyk.nasa.ui;
 
-import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,11 +30,7 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-
-import java.io.IOException;
-
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 
 /**
  * Created by admin on 03.02.2016.
@@ -55,6 +47,8 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
     private DisplayImageOptions options;
 
     private Realm realm;
+
+    private SimpleImageLoadingListener imageLoadingListener;
 
     @Nullable
     @Override
@@ -73,20 +67,13 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
     }
 
     private void initView(){
-        addImageryFromNASA(0);
+        String date = getDateByIndex(0);
+        addImageryFromNASA(date);
     }
 
-    /*
-    * diffDays - difference between current and desired day
-    * */
-    private void addImageryFromNASA(int diffDays){
-
-        DateTime curDate = new DateTime(DateTime.now());
-        DateTime desDate = curDate.minusDays(diffDays);
-
+    private void addImageryFromNASA(String date){
         Bundle extras = new Bundle();
-        String dateStr = DateTimeFormat.forPattern(DATE_FORMAT).print(desDate);
-        extras.putString(DATE_IMAGERY, dateStr);
+        extras.putString(DATE_IMAGERY, date);
         getLoaderManager().restartLoader(R.id.imagery_loader, extras, this);
     }
 
@@ -137,26 +124,7 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
 
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    String message = null;
-                    switch (failReason.getType()) {
-                        case IO_ERROR:
-                            message = getString(R.string.input_output_error);
-                            break;
-                        case DECODING_ERROR:
-                            message = getString(R.string.image_cant_be_decoded);
-                            break;
-                        case NETWORK_DENIED:
-                            message = getString(R.string.downloads_are_denied);
-                            break;
-                        case OUT_OF_MEMORY:
-                            message = getString(R.string.out_of_memory_error);
-                            break;
-                        case UNKNOWN:
-                            message = getString(R.string.unknown_error);
-                            break;
-                    }
-                    Toast.makeText(view.getContext(), message, Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(view.getContext(), getErrMessage(failReason), Toast.LENGTH_SHORT).show();
                     spinner.setVisibility(View.GONE);
                 }
 
@@ -171,14 +139,73 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
         return imageLayout;
     }
 
-    private boolean refreshImageryView(final Context context, Imagery imagery){
-        View view = getCurrentPage();
+    public String getErrMessage(FailReason failReason){
+        String message = null;
+        switch (failReason.getType()) {
+            case IO_ERROR:
+                message = getString(R.string.input_output_error);
+                break;
+            case DECODING_ERROR:
+                message = getString(R.string.image_cant_be_decoded);
+                break;
+            case NETWORK_DENIED:
+                message = getString(R.string.downloads_are_denied);
+                break;
+            case OUT_OF_MEMORY:
+                message = getString(R.string.out_of_memory_error);
+                break;
+            case UNKNOWN:
+                message = getString(R.string.unknown_error);
+                break;
+        }
+        return message;
+    }
 
+    public boolean imageryIsExist(Imagery imagery){
+        return imageAdapter.getViewByTag(imagery.getDate()) != null;
+    }
+
+    private boolean refreshImageryView(Imagery imagery){
+        View view = getCurrentPage();
+        ImageView imageView = (ImageView) view.findViewById(R.id.image);
+        final ProgressBar spinner = (ProgressBar) view.findViewById(R.id.loading);
+        final TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+        String title = imagery.getTitle();
+        if (title == null)
+            title = "";
+        tvTitle.setText(title + " (" + imagery.getDate() + ")");
+        final TextView tvDescription = (TextView) view.findViewById(R.id.tvDescription);
+        tvDescription.setText(imagery.getExplanation());
+        final TextView tvNoDate = (TextView) view.findViewById(R.id.tvNoDate);
+
+        String hdURL = imagery.getHdurl();
+        if (hdURL == null){
+            imageView.setVisibility(View.GONE);
+            tvNoDate.setVisibility(View.VISIBLE);
+        } else {
+            tvNoDate.setVisibility(View.GONE);
+            ImageLoader.getInstance().displayImage(imagery.getHdurl(), imageView, options, new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    spinner.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    Toast.makeText(view.getContext(), getErrMessage(failReason), Toast.LENGTH_SHORT).show();
+                    spinner.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    spinner.setVisibility(View.GONE);
+                }
+            });
+        }
         return true;
     }
 
-    public View getCurrentPage ()
-    {
+    public View getCurrentPage (){
         return imageAdapter.getView (pager.getCurrentItem());
     }
 
@@ -229,11 +256,11 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
         int id = loader.getId();
         if (id == R.id.imagery_loader) {
             Imagery imagery = data.getTypedAnswer();
+            swipeRefreshLayout.setRefreshing(false);
             try {
-                /*String media_type = imagery.getMedia_type().toString();
-                if (TextUtils.equals(media_type, Imagery.MEDIA_TYPE_IMAGE) ||
-                        TextUtils.equals(media_type, Imagery.MEDIA_TYPE_VIDEO))*/
-
+                if (imageryIsExist(imagery))
+                    refreshImageryView(imagery);
+                else
                     addView(createView(getContext(), imagery));
             } catch (NullPointerException e){
                 addView(createNoDataView(getContext()));
@@ -258,8 +285,10 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
 
         @Override
         public void onPageSelected(int position) {
-            if (position == 0)
-                addImageryFromNASA(imageAdapter.getCount());
+            if (position == 0){
+                String date = getDateByIndex(-1);
+                addImageryFromNASA(date);
+            }
         }
 
         @Override
@@ -270,8 +299,8 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
 
         @Override
         public void onRefresh() {
-            swipeRefreshLayout.setRefreshing(false);
-            Toast.makeText(getContext(), "Swipe " + (imageAdapter.getCount() - pager.getCurrentItem() -1), Toast.LENGTH_LONG).show();
+            String date = getDateByIndex(pager.getCurrentItem());
+            addImageryFromNASA(date);
         }
     }
 
@@ -279,5 +308,19 @@ public class ImagePagerFragment extends BaseFragment implements LoaderCallbacks<
     public void onDestroyView() {
         super.onDestroyView();
         realm.close();
+    }
+
+    private String getDateByIndex(int index){
+        DateTime curDate = new DateTime(DateTime.now());
+        int listViewCount = imageAdapter.getCount();
+        DateTime desDate;
+        /*
+        * for init
+        * */
+        if (listViewCount == 0)
+            desDate = curDate.minusDays(index);
+        else
+            desDate = curDate.minusDays(listViewCount - index - 1);
+        return DateTimeFormat.forPattern(DATE_FORMAT).print(desDate);
     }
 }
