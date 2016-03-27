@@ -27,7 +27,7 @@
     <string name="settings">Налаштування</string>
     <string name="dismiss">Скасувати</string>
 
-    <string name="no_data_to_display">Немає даних для відображення. Перевірте інтернет підключення і перезапустіть додаток.</string>
+    <string name="no_data_to_display">Немає даних для відображення. Перевірте інтернет підключення і потягніть вниз, щоб оновити дані.</string>
     <string name="change_wallpaper_success">Шпалери успішно змінено</string>
     <string name="change_wallpaper_error">Помилка! Шпалери не змінено.</string>
 </resources>

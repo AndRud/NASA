@@ -27,7 +27,7 @@
     <string name="settings">Settings</string>
     <string name="dismiss">Dismiss</string>
 
-    <string name="no_data_to_display">No data to display. Check your internet connection and restart the application.</string>
+    <string name="no_data_to_display">No data to display. Check your internet connection and swipe down to refresh data.</string>
     <string name="change_wallpaper_success">Wallpaper successfully changed</string>
     <string name="change_wallpaper_error">Failed! Wallpaper is not changed</string>
 </resources>
